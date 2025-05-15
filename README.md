@@ -46,3 +46,54 @@ print(plan)
 
 # Please Prepare Solution or Definition For the method find_plan(initial_state, goal_state, actions)
 <h3>You Can use any of the searching Strategies for planning and executing a sequence of actions.<br> You can also look in to the Code given in the Repository.</h3>
+
+# Solution:
+
+```
+def find_plan(initial_state, goal_state, actions):
+    plan = [] 
+    current_state = initial_state.copy()
+
+    def is_goal_reached(current, goal):
+        return all(item in current.items() for item in goal.items())
+
+    while not is_goal_reached(current_state, goal_state):
+        action_found = False
+
+        for action_name, action_info in actions.items():
+            precond = action_info['precondition']
+            effect = action_info['effect']
+
+            if all(current_state.get(k) == v for k, v in precond.items()):
+                # Apply the effect of the action
+                for k, v in effect.items():
+                    current_state[k] = v
+
+                plan.append(action_name)
+                action_found = True
+                break
+
+        if not action_found:
+            return None
+
+    return plan
+
+```
+
+# Example:
+
+```
+
+initial_state = {'A': 'Table', 'B': 'Table'}
+goal_state = {'A': 'B', 'B': 'Table'}
+
+actions = {
+    'move_A_to_B': {'precondition': {'A': 'Table', 'B': 'Table'}, 'effect': {'A': 'B'}},
+    'move_B_to_Table': {'precondition': {'A': 'Table', 'B': 'B'}, 'effect': {'B': 'Table'}}
+}
+
+plan = find_plan(initial_state, goal_state, actions)
+print(plan)  # ['move_A_to_B']
+
+```
+
